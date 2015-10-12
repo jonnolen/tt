@@ -1,0 +1,20 @@
+{
+  "name": "farmserver-template-tester",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "html-pdf": "1.4.0",
+    "jade": "1.11.0",
+    "phantomjs": "https://github.com/jonnolen/phantomjs/archive/v1.9.18_custom_target.tar.gz",
+    "yargs": "3.27.0"
+  },
+  "bin": {
+    "test_template": "bin/test_template"
+  }
+}

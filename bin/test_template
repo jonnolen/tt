@@ -1,0 +1,51 @@
+#!/usr/bin/env node
+
+'use strict';
+
+var fs = require('fs');
+var path = require('path');
+var pdf = require('html-pdf');
+var jade = require('jade');
+
+var argv = require('yargs')
+    .demand(2)
+    .argv;
+
+
+var template = path.resolve(process.cwd(), argv._[0]);
+
+var node_modules_path = path.resolve(__dirname, "../node_modules");
+var phantomjs_path = process.platform === "win32" ? path.resolve(node_modules_path, "phantomjs/lib/phantom/phantomjs.exe") : path.resolve(node_modules_path, "phantomjs/lib/phantom/bin/phantomjs");
+
+console.dir(phantomjs_path);
+
+var htmlOutput = path.resolve(process.cwd(), 'compiled_html.html');
+var pdfOutput = path.resolve(process.cwd(), 'compiled_pdf.pdf');
+
+var locals = JSON.parse(fs.readFileSync(path.resolve(process.cwd(), argv._[1])));
+
+var fn = jade.compileFile(template, { pretty: true });
+
+
+var html = fn(locals);
+
+
+fs.writeFileSync(htmlOutput, html);
+
+pdf.create( html,
+           {
+             border:"1in",
+             format:"Letter",
+             orientation:"portrait",
+             type:"pdf",
+             phantomPath: phantomjs_path
+           })
+  .toFile(pdfOutput, function(err, res) {
+    if (err){
+      console.dir(err);
+      process.exit(1);
+    }
+    else{
+      process.exit(0);
+    }
+  });
