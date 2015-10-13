@@ -6,23 +6,32 @@ var fs = require('fs');
 var path = require('path');
 var pdf = require('html-pdf');
 var jade = require('jade');
+var _ = require('underscore');
 
 var argv = require('yargs')
     .demand(2)
+    .usage('Usage: $0 <template_file.jade> <locals.json> <page_settings.json>')
     .argv;
 
 
 var template = path.resolve(process.cwd(), argv._[0]);
+var locals = JSON.parse(fs.readFileSync(path.resolve(process.cwd(), argv._[1])));
+
+var page_settings = argv._.length === 3 ? JSON.parse(fs.readFileSync(path.resolve(process.cwd(), argv._[2]))) :
+    {
+      border: ".25in",
+      format: "Letter",
+      orientation: "portrait"
+    };
+
 
 var node_modules_path = path.resolve(__dirname, "../node_modules");
 var phantomjs_path = process.platform === "win32" ? path.resolve(node_modules_path, "phantomjs/lib/phantom/phantomjs.exe") : path.resolve(node_modules_path, "phantomjs/lib/phantom/bin/phantomjs");
 
-console.dir(phantomjs_path);
-
 var htmlOutput = path.resolve(process.cwd(), 'compiled_html.html');
 var pdfOutput = path.resolve(process.cwd(), 'compiled_pdf.pdf');
 
-var locals = JSON.parse(fs.readFileSync(path.resolve(process.cwd(), argv._[1])));
+
 
 var fn = jade.compileFile(template, { pretty: true });
 
@@ -32,14 +41,13 @@ var html = fn(locals);
 
 fs.writeFileSync(htmlOutput, html);
 
-pdf.create( html,
-           {
-             border:"1in",
-             format:"Letter",
-             orientation:"portrait",
+
+var pdfOptions = _.assign({
              type:"pdf",
              phantomPath: phantomjs_path
-           })
+}, page_settings);
+
+pdf.create( html, pdfOptions)
   .toFile(pdfOutput, function(err, res) {
     if (err){
       console.dir(err);

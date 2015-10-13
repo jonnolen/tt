@@ -12,6 +12,7 @@
     "html-pdf": "1.4.0",
     "jade": "1.11.0",
     "phantomjs": "https://github.com/jonnolen/phantomjs/archive/v1.9.18_custom_target.tar.gz",
+    "underscore": "^1.8.3",
     "yargs": "3.27.0"
   },
   "bin": {

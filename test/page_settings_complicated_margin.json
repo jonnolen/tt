@@ -1,0 +1,10 @@
+{
+  "border":{
+    "top":"1in",
+    "left":"2in",
+    "right":".25in",
+    "bottom":"4in"
+  },
+  "format": "Letter",
+  "orientation": "portrait"
+}
